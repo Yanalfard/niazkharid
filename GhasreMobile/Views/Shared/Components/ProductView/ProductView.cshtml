@@ -1,0 +1,34 @@
+﻿@model IEnumerable<TblBrand>
+@if (Model.Any())
+{
+    @foreach (var item in Model)
+    {
+        @if (item.TblProduct.Any())
+        {
+            <div class="product-slider uk-position-relative uk-visible-toggle" tabindex="-1" uk-slider="sets:true;autoplay:true">
+                <div class="title">
+                    <a href="/ShowBrand/@item.BrandId/@item.Name.Replace(" ","-")" class="dot-container">
+                        <img src="~/st/v/dot.svg" alt="" class="dot" />
+                        <h3>@item.Name</h3>
+                    </a>
+                </div>
+
+                <ul class="uk-slider-items" >
+                    @*@foreach (var j in item.TblProduct.Where(i => i.IsDeleted == false && i.TblColor.Sum(i => i.Count) > 0))*@
+                    @foreach (var j in item.TblProduct.Where(i => i.IsDeleted == false && i.TblColor.Sum(i => i.Count) > 0).OrderByDescending(i => i.DateCreated).Take(30))
+                    {
+                        <li>
+                            <partial name="_ProductBlock" model="j" />
+                        </li>
+                    }
+                </ul>
+
+                <a class="uk-position-center-left uk-position-small sizeinphone" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+                <a class="uk-position-center-right uk-position-small sizeinphone" href="#" uk-slidenav-next uk-slider-item="next"></a>
+
+
+                @*<ul class="navigation uk-slider-nav uk-dotnav uk-flex-center uk-margin"></ul>*@
+            </div>
+        }
+    }
+}

@@ -1,0 +1,47 @@
+﻿@model RegisterVm
+@{
+    ViewData["Title"] = "ثبت نام";
+    Layout = "_AccountLayout.cshtml";
+}
+@section Scripts
+{
+    <partial name="_CaptchaScripts" />
+}
+<form asp-action="Register" asp-area="" class="form-block col"
+      data-ajax="true"
+      data-ajax-method="POST"
+      data-ajax-mode="replace"
+      data-ajax-complete="LoadingEnd()">
+    <partial name="_CaptchaInput" />
+    <h3 class="uk-margin-medium-bottom">
+        ثبت نام
+    </h3>
+    <div class="fg-col">
+        <label class="fg-label">نام </label>
+        <input class="entry" type="text" asp-for="Name" placeholder="...." />
+        <span class="text-danger" asp-validation-for="Name"></span>
+    </div>
+    <div class="fg-col">
+        <label class="fg-label">شماره تلفن</label>
+        <input class="entry" type="tel" asp-for="TellNo" placeholder="09............" />
+        <span class="text-danger" asp-validation-for="TellNo"></span>
+    </div>
+
+    <div class="fg-col">
+        <label class="fg-label">گذر واژه</label>
+        <input class="entry" type="password" asp-for="Password" placeholder="...." />
+        <span class="text-danger" asp-validation-for="Password"></span>
+    </div>
+
+    <div class="fg-col">
+        <label class="fg-label">تکرار گذرواژه</label>
+        <input class="entry" type="password" asp-for="RePassword" placeholder="...." />
+        <span class="text-danger" asp-validation-for="RePassword"></span>
+    </div>
+
+    <div class="actions gap-t">
+        <a href="/Login" class="btn btn-link">ورود</a>
+        <button class="btn btn-primary" onclick="LoadingRun()">ثبت نام</button>
+    </div>
+
+</form>

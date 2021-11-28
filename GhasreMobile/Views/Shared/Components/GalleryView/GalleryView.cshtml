@@ -1,0 +1,25 @@
+﻿@model IEnumerable<TblAlbum>
+@if (Model.Any())
+{
+    <div class="gallery-grid mat-card">
+        <div class="title">
+            <a href="#" class="dot-container">
+                <img src="~/st/v/dot.svg" alt="" class="dot" />
+                <h3>گالری</h3>
+            </a>
+        </div>
+        <div class="grid">
+            @foreach (var item in Model)
+            {
+                @foreach (var j in item.TblImage.Where(i => i.Image.Contains(".jpg") || i.Image.Contains(".jpeg") || i.Image.Contains(".png")))
+                {
+                    <a href="/AlbumView/@item.AlbumId/@item.Name.Replace(" ","-").Replace("/","-")"><img src="~/images/Album/@j.Image" alt="" /></a>
+                    break;
+                }
+            }
+        </div>
+        <div class="row">
+            <a class="btn btn-primary uk-margin-auto" href="/Gallery">بیشتر</a>
+        </div>
+    </div>
+}

@@ -1,0 +1,16 @@
+﻿@model TblBlog
+@{
+    Random r = new Random();
+}
+
+<a href="/ViewBlog/@Model.BlogId/@Model.Title.Replace(" ","-")" class="blog-block col mat-card">
+    <img src="~/Images/Blogs/thumb/@Model.MainImage" width="200" height="160" alt="اخبار" />
+    <h3>@Model.Title</h3>
+    <p dir="rtl">
+        @Model.Description
+    </p>
+    <div class="row gap-t">
+        <label>@Model.DateCreated.DateToShamsi()</label>
+        <span class="text-primary" href="/ViewBlog/@Model.BlogId/@Model.Title.Replace(" ","-")" dir="rtl">بیشتر...</span>
+    </div>
+</a>

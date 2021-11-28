@@ -1,0 +1,80 @@
+﻿@model IEnumerable<TblOrder>
+@{
+    ViewData["Title"] = "سابقه خرید";
+    Layout = "/Areas/User/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col g-3">
+    @if (Model.Any())
+    {
+        @foreach (var item in Model)
+        {
+            <table class="table mat-card" dir="rtl">
+                <thead>
+                    <tr>
+                        <th>
+                            <label class="date">@item.DateSubmited.DateToShamsi()</label>
+                        </th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>
+                            @if (item.IsPayed && item.Status != -1)
+                            {
+                                <label class="text-3 ">شماره فاکتور @item.OrdeId#  </label>
+                            }
+                            else if (item.Status == -1)
+                            {
+                                <label class="text-3 uk-text-danger">   پیش فاکتور @item.OrdeId# توسط مدیر لغو شده است  </label>
+                            }
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>نام محصول</th>
+                        <th>تعداد</th>
+                        <th>رنگ</th>
+                        <th>فی</th>
+                        <th>قیمت</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var j in item.TblOrderDetail)
+                    {
+                        <tr>
+                            <td>
+                                <a href="/Product/@j.ProductId/@j.Product.Name.Replace(" ","-")" class="link-text" target="_blank">@j.Product.Name</a>
+                            </td>
+                            <td>@j.Count</td>
+                            <td>@j.Color.Name</td>
+                            <td>@j.Price</td>
+                            <td>@((j.Count * j.Price).ToString("#,0")) تومان</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td dir="rtl">
+                            <span>تخفیف:</span>
+                            @item.PaymentStatus.ToString("#,0") تومان
+                        </td>
+                        <td dir="rtl">
+                            <span>تعداد:</span>
+                            @item.TblOrderDetail.Sum(i => i.Count)
+                        </td>
+                        <td dir="rtl">
+                            <span>هزینه ارسال:</span>
+                            @item.SendPrice.Value.ToString("#,0") تومان
+                        </td>
+                        <td></td>
+                        <td class="uk-text-success">
+                            <span>جمع کل:</span>
+                            @item.FinalPrice.ToString("#,0") تومان
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        }
+
+    }
+
+</div>

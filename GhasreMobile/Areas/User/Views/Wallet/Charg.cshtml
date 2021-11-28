@@ -1,0 +1,61 @@
+﻿@model ChargeWalletVm
+@{
+    ViewData["Title"] = "شارژ کیف پول";
+    Layout = "/Areas/User/Views/Shared/_Layout.cshtml";
+}
+
+<div class="mat-card  uk-margin-auto-left uk-width-3-5-at-m uk-width-3-5-at-l uk-width-2-5-at-xl">
+    <h3 class="uk-h3 uk-margin-small-bottom">
+        شارژ کیف پول
+    </h3>
+    <p class="text-3 uk-margin-small-top uk-margin-bottom">
+        دقت کنید، مبلغ غیر قابل عودت می باشد
+    </p>
+    <form asp-action="Charg" asp-controller="Wallet" asp-area="User">
+        <div class="fg-col" dir="rtl">
+            <label class="fg-label">مبلغ شارژ <span class="text-3">(تومان)</span></label>
+            <input type="text" class="entry PriceInput" data-type='currency' maxlength="10" />
+            <input type="hidden" class="entry" name="Amount" id="Amount" />
+            <span class="text-danger" asp-validation-for="Amount"></span>
+        </div>
+        <div class="uk-margin-medium-top">
+            <button class="btn btn-primary">شارژ</button>
+        </div>
+    </form>
+</div>
+
+@*این المنت یک آبجکت خالی است که تابع جاوااسکریپت فرمی که برای پست کردن اطلاعات به بانک میسازه رو در این شی قرار میده*@
+<div id="bankform"></div>
+
+@*این تابع یک فرم می سازد و اطلاعات را به شیوه پست ارسال می کند*@
+<script language="javascript" type="text/javascript">
+    //function postRefId(refIdValue) {
+    //    var form = document.createElement("form");
+    //    form.setAttribute("method", "POST");
+    //    form.setAttribute("action", "https://bpm.shaparak.ir/pgwchannel/startpay.mellat");
+    //    form.setAttribute("target", "_self");
+    //    var hiddenField = document.createElement("input");
+    //    hiddenField.setAttribute("name", "RefId");
+    //    hiddenField.setAttribute("value", refIdValue);
+    //    form.appendChild(hiddenField);
+    //    document.getElementById("bankform").appendChild(form);
+    //    form.submit();
+    //    document.getElementById("bankform").removeChild(form);
+    //}
+    function runerror() {
+        alert("خطا در ارسال به درگاه");
+    }
+</script>
+
+@section Scripts{
+    @Html.Raw(ViewBag.jscode)
+    @Html.Raw(ViewBag.message)
+
+    <script src="~/js/Auto_Formatting_Currency.js"></script>
+    <script>
+        $('.PriceInput').change(function () {
+            var price = $(this).val().replaceAll(',', "");
+            $('#Amount').val(price);
+        })
+    </script>
+}

@@ -1,0 +1,422 @@
+﻿@using GhasreMobile.Utilities;
+@model TblProduct
+@{
+    ViewData["Title"] = Model.Name;
+    ViewData["Single"] = true;
+    ViewData["Keywords"] = string.Join(',', Model.TblProductKeywordRel.Select(i => i.Keyword.Name));
+    //ViewData["Description"] = Model.Name "-" Model.Brand.Name - Model.Catagory.Name;
+}
+
+@section Styles{
+    <link href="~/css/pages/product.min.css" rel="stylesheet" />
+}
+
+<nav class="breadcrumb">
+    <a href="/Search">کالا</a>
+    <a href="/ShowBrand/@Model.BrandId/@Model.Brand.Name.Replace(" ","-")">@Model.Brand.Name</a>
+    <a href="#" class="active">@Model.Name</a>
+</nav>
+
+<div class="pr mat-card">
+    <div class="pr-title col">
+        <h1 class="uk-h4" dir="rtl">
+            @Model.Name
+        </h1>
+        <div class="rowr uk-margin-top">
+            <span class="row" dir="rtl">
+                <span class="uk-margin-small-left">برند:</span>
+                <a href="/ShowBrand/@Model.BrandId/@Model.Brand.Name.Replace(" ","-")">@Model.Brand.Name</a>
+            </span>
+            <span class="row uk-margin-right" dir="rtl">
+                <span class="uk-margin-small-left">دسته:</span>
+                <a href="/ShowCatagory/@Model.CatagoryId/@Model.Catagory.Name.Replace(" ","-")">@Model.Catagory.Name</a>
+            </span>
+            <span class="row uk-margin-right" dir="rtl">
+                <span class="uk-margin-small-left">کد:</span>
+                <a href="#">#@Model.ProductId</a>
+            </span>
+        </div>
+    </div>
+
+    <div class="pr-image">
+        @if (Model.TblColor.Sum(i => i.Count) > 0 && Model.PriceBeforeDiscount > 0)
+        {
+            @if (Model.TblSpecialOffer.Count > 0 && Model.TblSpecialOffer.SingleOrDefault().ValidTill >= DateTime.Now)
+            {
+                <div class="head uk-padding-small border row uk-margin-small-bottom">
+                    <ul class="timer uk-margin-auto-right" countdown="@Model.TblSpecialOffer.SingleOrDefault().ValidTill.ConvertToUnixTimestamp()">
+                        <li>
+                            <label day></label>
+                            <span>روز</span>
+                        </li>
+                        <li>
+                            <label hour></label>
+                            <span>ساعت</span>
+                        </li>
+                        <li>
+                            <label minute></label>
+                            <span>دقیقه</span>
+                        </li>
+                        <li>
+                            <label second></label>
+                            <span>ثانیه</span>
+                        </li>
+                    </ul>
+                    <h3 class="percentage uk-text-danger">
+                        @Model.TblSpecialOffer.SingleOrDefault().Discount%
+                    </h3>
+                </div>
+            }
+        }
+
+        <div uk-slideshow="animation: slide; ratio:1:1">
+            <div class="border">
+                @if (Model.IsFractional)
+                {
+                    <label class="fraction">
+                        فروش اقساطی
+                    </label>
+                }
+                <div class="slider">
+                    <ul class="img uk-slideshow-items" uk-lightbox="animation: slide">
+                        <li>
+                            <a href="~/Images/ProductMain/@Model.MainImage">
+                                <img src="~/Images/ProductMain/thumb/@Model.MainImage" alt="" uk-cover>
+                            </a>
+                        </li>
+                        @foreach (var item in Model.TblProductImageRel)
+                        {
+                            <li>
+                                <a href="~/Images/ProductAlbum/@item.Image.Image">
+                                    <img src="~/Images/ProductAlbum/thumb/@item.Image.Image" alt="" uk-cover>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="foot">
+
+                    <div class="left">
+                        <label class="action" uk-tooltip="افزورن به لیست مقایسه" uk-icon="contrast">
+                            <input name="comparison"
+                                   onchange="comparisonChanged(this)"
+                                   type="checkbox" onclick="AddToCompare(@Model.ProductId)" />
+                        </label>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <label class="action @((ViewBag.IsBookMark)?"checked":"")" uk-tooltip="افزودن به لیست علاقه مندی ها" uk-icon="bookmark-outline">
+                                <input name="favourites"
+                                       onchange="favouritesChanged(this)"
+                                       type="checkbox" />
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="action" onclick="window.location='/Login'" uk-tooltip="افزودن به لیست علاقه مندی ها" uk-icon="bookmark-outline">
+                                <input name="favourites" type="checkbox" />
+                            </label>
+                        }
+
+
+                    </div>
+                    <div class="right">
+                        <button class="action" uk-tooltip="اشتراک گذاری" onclick="share(window.location.href)"
+                                uk-icon="share-social-outline"></button>
+                        @*<label class="action" uk-tooltip="فعال کردن اعلان ها" uk-icon="notifications-outline">
+                                <input name="notifications"
+                                       onchange="notificationschanged(this)"
+                                       type="checkbox" />
+                            </label>*@
+                    </div>
+                </div>
+            </div>
+            <div class="thumbnav uk-margin-small-top">
+                <ul class="uk-thumbnav">
+                    <li uk-slideshow-item="0"><a href="#"><img src="~/Images/ProductMain/thumb/@Model.MainImage" alt=""></a></li>
+                    @foreach (var item in Model.TblProductImageRel)
+                    {
+                        <li uk-slideshow-item="@(Model.TblProductImageRel.ToList().IndexOf(item)+1)"><a href="#"><img src="~/Images/ProductAlbum/thumb/@item.Image.Image" alt=""></a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="pr-content col">
+        <div class="body col">
+            @Html.Raw(Model.DescriptionShortHtml)
+        </div>
+        <div class="price g-3 rowr-at-l rowr-at-m col-at-s col-at-xs">
+            @if (Model.TblColor.Sum(i => i.Count) > 0 && Model.IsDeleted == false && Model.PriceBeforeDiscount > 0)
+            {
+                @if (Model.TblSpecialOffer.Count > 0 && Model.TblSpecialOffer.SingleOrDefault().ValidTill >= DateTime.Now)
+                {
+
+                    if (Model.PriceAfterDiscount == 0)
+                    {
+                        var BeforeSumWithDiscount = Model.PriceBeforeDiscount - (long)(Math.Floor((double)(Model.PriceBeforeDiscount * Model.TblSpecialOffer.SingleOrDefault().Discount / 100)));
+                        BeforeSumWithDiscount = (long)MainUtil.Round((double)BeforeSumWithDiscount, 3);
+                        <h4 class="discount">
+                            @Model.PriceBeforeDiscount.Value.ToString("#,0")
+                            @*<span class="t">تومان</span>*@
+                        </h4>
+                        <h3 class="actual">
+                            @BeforeSumWithDiscount.Value.ToString("#,0")
+                            <span class="t">تومان</span>
+                        </h3>
+                    }
+                    else
+                    {
+                        var AfterSumWithDiscount = Model.PriceAfterDiscount - (long)(Math.Floor((double)(Model.PriceAfterDiscount * Model.TblSpecialOffer.SingleOrDefault().Discount / 100)));
+                        AfterSumWithDiscount = (long)MainUtil.Round((double)AfterSumWithDiscount, 3);
+                        <h4 class="discount">
+                            @Model.PriceAfterDiscount.Value.ToString("#,0")
+                            @*<span class="t">تومان</span>*@
+                        </h4>
+                        <h3 class="actual">
+                            @AfterSumWithDiscount.Value.ToString("#,0")
+                            <span class="t">تومان</span>
+                        </h3>
+                    }
+                }
+                else
+                {
+                    @if (Model.PriceAfterDiscount == 0)
+                    {
+                        <h3 class="actual">
+                            @Model.PriceBeforeDiscount.Value.ToString("#,0")
+                            <span class="t">تومان</span>
+                        </h3>
+                    }
+                    else
+                    {
+                        <h4 class="discount">
+                            @Model.PriceBeforeDiscount.Value.ToString("#,0")
+                            @*<span class="t">تومان</span>*@
+                        </h4>
+                        <h3 class="actual">
+                            @Model.PriceAfterDiscount.Value.ToString("#,0")
+                            <span class="t">تومان</span>
+                        </h3>
+                    }
+                }
+
+            }
+
+        </div>
+        @{
+            var colors = Model.TblColor.Where(i => i.Count > 0).ToList();
+
+
+        }
+        @if (colors.Count > 0 && Model.PriceBeforeDiscount > 0)
+        {
+            <div class="colours">
+                <h4>رنگ بندی</h4>
+                <ul class="grid uk-margin-small-top">
+                    @foreach (var item in colors)
+                    {
+                        System.Drawing.Color col = System.Drawing.ColorTranslator.FromHtml(item.ColorCode);
+                        bool isLight = col.R * 0.2126 + col.G * 0.7152 + col.B * 0.0722 > 255 / 2;
+                        <li>
+                            <input type="hidden" name="ProductColorId" id="ProductColorId" value="@item.ColorId" />
+                            <div class="clr @(colors.IndexOf(item)==0?"active":"")" onclick="selectColour(this)">
+                                <span>@item.Name</span>
+                                <strong style="background-color: @item.ColorCode; @(isLight ? "border:1px solid #333;" : "border:1px solid #ddd;")"></strong>
+                                <input type="hidden" name="ColorId" value="@item.ColorId" />
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <div class="cart uk-margin-top">
+
+
+            @if (Model.TblColor.Sum(i => i.Count) > 0 && Model.IsDeleted == false && Model.PriceBeforeDiscount > 0)
+            {
+                <!-- #region BTN ADD -->
+                <div class="counter rowr">
+                    <button class="plus" uk-icon="add" onclick="AddToCart(@Model.ProductId)"></button>
+                    <span class="count">
+                        <span id="shopCountProduct"></span>
+                    </span>
+                    <button class="minus" uk-icon="remove" onclick="minusProduct()"></button>
+                </div>
+                <!-- #endregion -->
+                <button class="button" onclick="AddToCart(@Model.ProductId)">
+                    <span>افزودن به سبد خرید</span>
+                    <span uk-icon="cart"></span>
+                </button>
+            }
+            else if (Model.IsDeleted == true)
+            {
+                <button class="button">
+                    <span>توقف فروش</span>
+                </button>
+            }
+            else
+            {
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <button class="button" onclick="alertWhenReady(@Model.ProductId)">
+                        <span>موجود شد به من اطلاع بده</span>
+                        <span uk-icon="notifications"></span>
+                    </button>
+                }
+                else
+                {
+                    <button class="button" onclick="window.location='/Login'">
+                        <span>موجود شد به من اطلاع بده</span>
+                        <span uk-icon="notifications"></span>
+                    </button>
+                }
+
+            }
+
+        </div>
+    </div>
+    <ul class="pr-specs">
+        @if (Model.TblColor.Sum(i => i.Count) > 0 && Model.PriceBeforeDiscount > 0)
+        {
+            <li>
+                موجود در انبار
+            </li>
+        }
+        <li>
+            تحویل پیشتاز
+        </li>
+        <li>
+            ضمانت بازگشت
+        </li>
+        <li>
+            ضمانت اصل بودن کالا
+        </li>
+        <li>
+            ارسال به تمامی نقاط
+        </li>
+    </ul>
+</div>
+
+<nav class="section-nav">
+    <a href="#analisis">بررسی تخصصی</a>
+    <a href="#specs">جزئیات فنی</a>
+    <a href="#comments">نظر خریداران محصول</a>
+</nav>
+
+<div class="mat-card gap-t">
+    <a href="#" name="analisis" class="anchor-within-page"></a>
+    @Html.Raw(Model.DescriptionLongHtml)
+</div>
+
+<div class="details col mat-card gap-t">
+    <a href="#" name="specs" class="anchor-within-page"></a>
+    <h3 dir="rtl" class="uk-margin-remove-top">جزئیات فنی</h3>
+    <table dir="rtl">
+        <tbody>
+            @if (Model.TblProductPropertyRel.Any())
+            {
+                @foreach (var item in Model.TblProductPropertyRel.Where(i => i.Value != "" && i.Property.Name != ""))
+                {
+                    @if (item.Value != "")
+                    {
+                        <tr>
+                            <td>@item.Property.Name</td>
+                            <td>@item.Value</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@await Component.InvokeAsync("SendCommentView", Model.ProductId)
+
+<a href="#" name="comments" class="anchor-within-page"></a>
+@if (Model.TblProductCommentRel.Any())
+{
+    <div class="comment-section mat-card gap-t">
+        <h3 class="uk-margin-bottom uk-margin-remove-top">نظرات کاربران</h3>
+        <ul>
+            @foreach (var item in Model.TblProductCommentRel.Where(i => i.Comment.IsValid))
+            {
+                <li>
+                    <partial name="_RepliableComment" model="item.Comment" />
+                </li>
+            }
+        </ul>
+    </div>
+}
+
+@await Component.InvokeAsync("ShowProductsInView", Model.ProductId)
+
+<input type="hidden" class="hidden" name="ProductId" id="ProductId" value="@Model.ProductId" />
+@section Scripts{
+
+    <script>
+        function minusProduct() {
+            var id = $('#ProductColorId').val();
+            $.get("/ShopCart/MinusProduct/" + id, function (res) {
+                //$("#shopCountProduct").html(res);
+                animateCrt();
+                countShopCart();
+                shopCountProduct();
+            });
+        }
+
+        //var id = $('#brandName').val();
+        //$.get('/Product/SliderInProduct/' + id, function (result) {
+        //    $('#listProductsSlider').html(result);
+        //});
+
+        let selectedColour = document.querySelector('.clr.active');
+        function selectColour(sender) {
+            selectedColour?.classList.toggle('active');
+            sender.classList.toggle('active');
+            selectedColour = sender;
+            const input = sender.querySelector('input[name=ColorId]');
+            const targetInput = document.getElementById('ProductColorId');
+            targetInput.value = input.value;
+            shopCountProduct();
+        }
+
+        function comparisonChanged(sender) {
+
+            sender.parentElement.classList.toggle('checked');
+            // Toggle Comparison
+            //$.get("/api/Shop/" + id + "/" + colorId, function (res) {
+            //    $("#countShopCart").html(res);
+            //    // updateShopCart();
+            //});
+        }
+
+
+
+        function favouritesChanged(sender) {
+            var id = $('#ProductId').val();
+            sender.parentElement.classList.toggle('checked');
+            $.ajax({
+                url: '/Product/BookMark/',
+                data: { id: id },
+            }).done(function (result) {
+                if (result == "true") {
+                    UIkit.notification('محصول مورد نظر به علاقه مندی های شما اضافه شد');
+                }
+                else {
+                    UIkit.notification('محصول مورد نظر از علاقه مندی های شما حذف شد');
+                }
+            })
+        }
+
+        function notificationsChanged(sender) {
+            sender.parentElement.classList.toggle('checked');
+            // Toggle Notification
+
+        }
+
+    </script>
+
+}

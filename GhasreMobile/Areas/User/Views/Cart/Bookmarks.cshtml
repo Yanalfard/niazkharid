@@ -1,0 +1,25 @@
+﻿@model IEnumerable<TblProduct>
+@{
+    ViewData["Title"] = "علاقه مندی ها";
+    Layout = "/Areas/User/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+@if (Model.Count() > 0)
+{
+    <div class="bookmarks mat-card">
+        @foreach (var item in Model)
+        {
+            <partial name="_ProductBlock" model="item" />
+        }
+    </div>
+}
+else
+{
+    <div class="mat-card details">
+        لیست علاقه مندی های  شما خالیست
+    </div>
+}
+

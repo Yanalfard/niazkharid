@@ -1,0 +1,28 @@
+﻿@model TblComment
+<div class="comment">
+    <div class="head">
+        <h5>@Model.Client.Name</h5>
+        <label class="date">@Model.DateCreated.Value.DateToShamsi() </label>
+    </div>
+    <p>
+        @Model.Body
+    </p>
+    <div class="action">
+        @* این قراره مودال باز کنه، آی دی کامنت رو پاس بده به فرم مودال،  *@
+        <a onclick="reply('@Model.CommentId')"
+           class="link-text" uk-icon="icon:arrow-redo-outline;ratio:.8" uk-tooltip="پاسخ به این کامنت"></a>
+    </div>
+    <ul>
+        @*مواظب این کد باش، ممکنه Stack Overflow Exception بندازه*@
+        @if (Model.InverseParent.Any())
+        {
+            @foreach (var reply in Model.InverseParent)
+            {
+                <li>
+                    <partial name="_RepliableComment" model="reply" />
+                </li>
+            }
+        }
+    </ul>
+</div>
+
