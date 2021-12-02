@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewData["Title"] = "نتیجه پرداخت";
+    ViewData["Single"] = true;
+}
+
+<div class="container uk-margin-auto-bottom mat-pad" style="height:50vh">
+    <div class="">
+        @*@if (ViewBag.IsSuccess == true)
+        {
+        <div class="uk-alert uk-alert-success">
+            <h2>پرداخت با موفقیت انجام شد</h2>
+            <p> کد پیگیری : @ViewBag.Code</p>
+        </div>
+        }
+        else
+        {
+        <div class="uk-alert uk-alert-danger">
+            <h2>پرداخت با شکست مواجه شد</h2>
+        </div>
+        }*@
+        @Html.Raw(ViewBag.message)
+
+    </div>
+</div>

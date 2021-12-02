@@ -1,0 +1,36 @@
+﻿@model SendTicketVm
+@{
+    ViewData["Title"] = "پشتیبانی";
+    Layout = "/Areas/User/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tickets mat">
+    <div class="head">
+        <h3>
+            پشتیبانی
+        </h3>
+    </div>
+    <div class="body">
+        <ul id="listTicket">
+            @*@await Component.InvokeAsync("AllTicketUser")*@
+        </ul>
+    </div>
+    <form asp-action="SendTicket" class="foot">
+        <div class="col flex-auto g-1">
+            <input type="text" placeholder="موضوع" class="entry" asp-for="Title" />
+            <span class="uk-text-danger" asp-validation-for="Title"></span>
+            <textarea type="text" placeholder="توضیحات" class="entry" asp-for="Body"></textarea>
+            <span class="uk-text-danger" asp-validation-for="Body"></span>
+        </div>
+        <button class="send" uk-icon="send"></button>
+    </form>
+</div>
+@section Scripts{
+    <script>
+        $.get("/User/Ticket/AllTicket/",
+            function (result) {
+                $("#listTicket").html(result);
+            }
+        );
+    </script>
+}

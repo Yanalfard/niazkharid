@@ -1,0 +1,78 @@
+﻿@model TblConfig
+@{
+    ViewData["Title"] = "شعب ما";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles{
+
+    <link href="~/css/pages/affiliate.min.css" rel="stylesheet" />
+    <link href="~/css/leaflet.css" rel="stylesheet" />
+
+}
+
+@section Aside{
+
+    @await Component.InvokeAsync("StoreView")
+}
+
+
+<nav class="breadcrumb uk-padding-remove">
+    <a href="#">شعب ما</a>
+</nav>
+
+<div class="map-main mat">
+    <div id="map">
+
+    </div>
+    <div class="mat-pad">
+        @Html.Raw(Model.Value)
+    </div>
+</div>
+
+<div id="swAffiliates" role="none"></div>
+
+@section Scripts{
+
+    <script src="~/js/leaflet.js"></script>
+
+    <script>
+        var map = L.map('map').setView([38.05674409597339, 46.27700302496196], 12);
+
+        L.tileLayer('https://a.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+
+        var iconSetting = L.Icon.extend({
+            options: {
+                iconSize: [32, 32],
+                iconAnchor: [16, -8]
+            }
+        });
+
+        var customIcon = new iconSetting({ iconUrl: '/marker.svg' });
+
+        for (var i = 0; i < $("mymap").length; i++) {
+            var theMarker = {};
+
+            theMarker = L.marker(
+                [$("mymap lat")[i].innerHTML, $("mymap lon")[i].innerHTML],
+                { icon: customIcon }
+            )
+                .addTo(map).bindPopup(
+                    `
+                                        <div class="aff-marker">
+                                            <h4>${$('mymap name')[i].innerHTML}</h4>
+                                            <p>
+                ${$('mymap address')[i].innerHTML}
+                                            </p>
+                                            <a href="/StoreView/${$("mymap storeid")[i].innerHTML}/${$("mymap name")[i].innerHTML}" dir="rtl">
+                                                مشاهده
+                                            </a>
+                                        </div>
+                                        `
+                );
+
+        }
+    </script>
+
+}

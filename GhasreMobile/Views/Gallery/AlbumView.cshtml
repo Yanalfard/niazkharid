@@ -1,0 +1,38 @@
+﻿@model TblAlbum
+@{
+    ViewData["Title"] = " آلبوم " + " " + Model.Name;
+    ViewData["Single"] = true;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles{
+
+    <link href="~/css/pages/index.min.css" rel="stylesheet" />
+
+}
+
+<div class="mat-card col">
+    <div class="gallery-grid">
+        <h3 class="uk-margin-bottom uk-text-center">@Model.Name</h3>
+        <div class="grid" uk-lightbox>
+            @foreach (var item in Model.TblImage)
+            {
+                @if (item.Image.ToLower().Contains(".mp4") || item.Image.ToLower().Contains(".mkv") || item.Image.ToLower().Contains(".avi") || item.Image.ToLower().Contains(".ts"))
+                {
+                    <a href="~/Images/Album/@item.Image" data-caption="@Model.Name">
+                        <img src="~/st/r/logoInVideo.png" alt="@Model.Name" />
+                    </a>
+                }
+                else
+                {
+                    <a href="~/Images/Album/@item.Image" data-caption="@Model.Name">
+                        <img src="~/Images/Album/thumb/@item.Image" alt="@Model.Name" />
+                    </a>
+                }
+            }
+        </div>
+        <div class="row">
+            <button class="btn btn-primary uk-margin-auto " onclick="window.history.back()">بازگشت</button>
+        </div>
+    </div>
+</div>

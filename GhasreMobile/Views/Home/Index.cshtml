@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewData["Title"] = "قصر موبایل";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    List<int> idsAdd = (List<int>)ViewData["ListIdAd"];
+    List<int> special = (List<int>)ViewData["ListIdSpecial"];
+    Random random = new Random();
+
+    int getNext()
+    {
+        if (idsAdd.Count > 0)
+        {
+            int randomIndex = random.Next(0, idsAdd.Count - 1);
+            int id = idsAdd[randomIndex];
+            idsAdd.Remove(id);
+            return id;
+        }
+        return -1;
+    }
+
+    int getNextspecial()
+    {
+        if (special.Count > 0)
+        {
+            int randomIndexspecial = random.Next(0, special.Count - 1);
+            int id = special[randomIndexspecial];
+            special.Remove(id);
+            return id;
+        }
+        return -1;
+    }
+
+
+}
+@section Styles{
+    <link href="~/css/pages/index.min.css" rel="stylesheet" />
+}
+@section Aside{
+
+    <div swap="swBrandList" class="categories">
+        <ul>
+            @await Component.InvokeAsync("BrandListView")
+        </ul>
+    </div>
+
+    @await Component.InvokeAsync("SpecialOfferViem", new { swap = "Exp1", number = getNextspecial() })
+
+    @await Component.InvokeAsync("AdView", new { swap = "Ad1", number = getNext() })
+
+    @await Component.InvokeAsync("AdView", new { swap = "Ad2", number = getNext() })
+
+    @await Component.InvokeAsync("SpecialOfferViem", new { swap = "Exp2", number = getNextspecial() })
+
+    @await Component.InvokeAsync("AdView", new { swap = "Ad3", number = getNext() })
+
+    @await Component.InvokeAsync("AdView", new { swap = "Ad4", number = getNext() })
+
+}
+<!-- #SliderView -->
+@await Component.InvokeAsync("SliderView")
+<!-- #SliderView -->
+<div role="none" id="swBrandList"></div>
+<!-- #Product -->
+@await Component.InvokeAsync("ProductView")
+<!-- #Product -->
+<div class="swap-doubler">
+    <div role="none" id="Exp1"></div>
+</div>
+<!-- #Blogs -->
+@await Component.InvokeAsync("BlogsView")
+<!-- #Blogs -->
+<div role="none" id="Ad1"></div>
+<!-- #GalleryView -->
+
+@await Component.InvokeAsync("GalleryView")
+<!-- #GalleryView -->
+<div role="none" id="Ad2"></div>
+<!-- #DeliveryView -->
+@await Component.InvokeAsync("DeliveryView")
+<!-- #DeliveryView -->
+<div role="none" id="Ad3"></div>
+
+@*@await Component.InvokeAsync("ProductView", new { id = 1 })*@
+<!-- #questions -->
+@await Component.InvokeAsync("QuestionsView")
+<!-- #questions -->
+<div role="none" id="Exp2"></div>
+<div role="none" id="Ad4"></div>
+
+
+
+
+
+<!-- #region showModelMessage -->
+<div id="modal-center" class="uk-flex-top" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+        <p>
+            @Html.Raw(ViewBag.TextModelMessage)
+        </p>
+    </div>
+</div>
+<!-- #endregion -->
+
+
+@section Scripts{
+
+    @if (ViewBag.showModelMessage == "true")
+    {
+        <script>
+            UIkit.modal(document.getElementById('modal-center')).show();
+        </script>
+    }
+}
+

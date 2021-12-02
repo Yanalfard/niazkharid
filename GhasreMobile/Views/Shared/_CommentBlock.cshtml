@@ -1,0 +1,15 @@
+﻿@model TblComment   
+<div class="comment">
+    <div class="head">
+        <h5>@Model.Client.Name</h5>
+        <label class="date">@Model.DateCreated.Value.DateToShamsi() </label>
+    </div>
+    <p>
+        @Model.Body
+    </p>
+    <div class="actions">
+        @*<a href="" uk-tooltip="لایک کردن" class="gap-l" uk-icon="heart-outline"></a>*@
+        @*<a href="" uk-tooltip="ثبت پاسخ" class="" uk-icon="arrow-redo"></a>*@
+        @*<a href="" uk-tooltip="گزارش" class="uk-margin-auto-right" uk-icon="megaphone"></a>*@
+    </div>
+</div>

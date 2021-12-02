@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<html lang="fa">
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="@(ViewData["Description"] ?? "سایت خرید و فروش آنلاین گوشی های موبایل به صورت اقساطی")">
+    <meta name="keywords" content="@(ViewData["Keywords"] ?? "قصر موبایل، گوشی، تلفن، خرید، آنلاین، اقساطی")">
+    <meta name="author" content="صدرا محمدی، ینال احمدزاده، مهدی سهندی">
+
+    <title>@(ViewData["Title"] ?? "قصر موبایل")</title>
+
+    <link href="~/css/uikit.min.css" rel="stylesheet" />
+    <link href="~/css/Controls.min.css" rel="stylesheet" />
+    <link href="~/css/pages/user.min.css" rel="stylesheet" />
+    <link href="~/css/Load.css" rel="stylesheet" />
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+    <link rel="manifest" type="application/json+oembed" href="~/manifest.json" />
+
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#810081">
+
+    @RenderSection("Styles", false)
+
+</head>
+<body>
+
+    <partial name="_OffCanvas" />
+
+    <div class="header">
+        <div class="bottom">
+            <div class="uk-container rowr">
+                <nav>
+                    <img src="~/st/r/logo.jpg" alt="logo" width="28" height="28" onclick="window.location = '/'" />
+                    <button uk-icon="menu-outline" uk-toggle="target: #offCanvas" type="button" class="uk-margin-small-right show-on-threshold"></button>
+                    <a href="/">خانه</a>
+                    <a href="/Forum">تالار گفتگو</a>
+                    <a href="/Contact">تماس با ما</a>
+                    <a href="/About">درباره ما</a>
+                    <a href="/Affiliate">شعب ما</a>
+                    <a href="/Blog">اخبار</a>
+                    <a href="/Gallery">گالری</a>
+                    <a href="/Conditions">شرایط اقساطی</a>
+                </nav>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    @if (User.Claims.Last().Value == "user")
+                    {
+                        <a href="" class="profile">
+                            <span>پروفایل</span>
+                            <span uk-icon="person-circle-outline"></span>
+                        </a>
+
+                        <div uk-drop="boundary: .profile; pos:bottom-left; offset: 20; mode: hover,click">
+                            <div class="mat-card">
+                                <ul class="col g-2">
+                                    <li>
+                                        <a class="link-text" href="/User/Profile">پروفایل</a>
+                                    </li>
+                                    <li>
+                                        <a class="link-text" href="/User/Cart">سبد خرید</a>
+                                    </li>
+                                    <li>
+                                        <a class="link-text" href="/LogOut">خروج</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    }
+                    else if (User.Claims.Last().Value == "employee" || User.Claims.Last().Value == "admin")
+                    {
+                        <a href="" class="profile">
+                            <span>پروفایل</span>
+                            <span uk-icon="person-circle-outline"></span>
+                        </a>
+
+                        <div uk-drop="boundary: .profile; pos:bottom-left; offset: 20; mode: hover,click">
+                            <div class="mat-card">
+                                <ul class="col g-2">
+                                    <li>
+                                        <a class="link-text" href="/Admin/">پنل مدیریت</a>
+                                    </li>
+                                    <li>
+                                        <a class="link-text" href="/User/Profile">پنل کاربری</a>
+                                    </li>
+                                    <li>
+                                        <a class="link-text" href="/LogOut">خروج</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <a href="/Login" class="profile">
+                        <span>ورود</span>
+                        <span uk-icon="person-circle-outline"></span>
+                    </a>
+                }
+
+
+            </div>
+        </div>
+    </div>
+    <div role="none" class="space-nav-header gap-b"></div>
+
+    @if (ViewData["NoNav"] == null)
+    {
+        <button uk-toggle="target: #fnav" type="button" class="floating-navigation">
+            <span uk-icon="ratio:1.1;icon:menu"></span>
+        </button>
+    }
+
+    <!-- This is the modal -->
+    <div id="fnav" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body">
+            <div id="navswapper"></div>
+        </div>
+    </div>
+
+    <!-- Single means the layout has only one Column -->
+    @if (ViewData["Single"] == null)
+    {
+        <div class="m uk-container">
+            <main class="m-content">
+                @RenderBody()
+            </main>
+            <aside class="m-aside">
+                <div swap="navswapper"><partial name="_UserNavigation" /></div>
+            </aside>
+        </div>
+    }
+    else if (ViewData["Single"] != null)
+    {
+        <div class="uk-container">
+            @RenderBody()
+        </div>
+    }
+
+    <p class="credits uk-text-center text-4">
+        کلیه حقوق این متعلق به شرکت قصر موبایل می باشد، طراحی و توسعه توسط
+        <a href="https://arvintavco.com">شرکت ایده پرداز آروین تاو</a>
+    </p>
+
+    <!-- #Loadinh -->
+    <div id="overlay">
+        <div class="cv-spinner">
+            <span class="spinner"></span>
+        </div>
+    </div>
+
+    <!--Pwa-->
+    @*<script src="~/app.js"></script>*@
+    <script src="~/Jquery/jquery-3.4.1.min.js"></script>
+
+    <script src="~/js/uikit.min.js"></script>
+    <script src="~/js/uikit-icons.js"></script>
+    <script src="~/js/main.js"></script>
+
+    <script src="~/Validate/jquery.validate.min.js"></script>
+    <script src="~/Validate/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Validate/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Validate/jquery.unobtrusive-ajax.min.js"></script>
+
+    <!--BEGIN RAYCHAT CODE-->
+    <script type="text/javascript">!function () { function t() { var t = document.createElement("script"); t.type = "text/javascript", t.async = !0, localStorage.getItem("rayToken") ? t.src = "https://app.raychat.io/scripts/js/" + o + "?rid=" + localStorage.getItem("rayToken") + "&href=" + window.location.href : t.src = "https://app.raychat.io/scripts/js/" + o + "?href=" + window.location.href; var e = document.getElementsByTagName("script")[0]; e.parentNode.insertBefore(t, e) } var e = document, a = window, o = "ed2cbd05-94f9-447e-8556-4bad0cf1ac1c"; "complete" == e.readyState ? t() : a.attachEvent ? a.attachEvent("onload", t) : a.addEventListener("load", t, !1) }();</script> <!--END RAYCHAT CODE-->
+
+    @RenderSection("Scripts", false)
+
+
+
+    <script>
+        function alertWhenReady(id) {
+            $.ajax({
+                url: '/Product/AlertWhenReady/',
+                data: { id: id },
+            }).done(function (result) {
+                if (result == "true") {
+                    UIkit.notification('بعد از موجود شدن محصول اطلاع رسانی خواهد شد');
+                }
+                else {
+                    UIkit.notification('شما در صف اطلاع رسانی قرار دارید');
+                }
+            })
+        }
+    </script>
+</body>
+</html>

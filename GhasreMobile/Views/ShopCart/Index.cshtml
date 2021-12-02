@@ -1,0 +1,19 @@
+﻿@model IEnumerable<ShopCartItemVm>
+@{
+    ViewData["Title"] = "سبد خرید";
+    Layout = "_ShopCartLayout.cshtml";
+}
+
+@if (Model.Any())
+{
+
+    <partial name="_Cart" model="Model" />
+
+    <a href="/Login" class="btn btn-primary uk-margin-auto-left">ورود برای تکمیل خرید</a>
+}
+else
+{
+    <div class="mat-card details">
+        سبد خرید شما خالیست
+    </div>
+}

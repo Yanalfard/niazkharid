@@ -1,0 +1,17 @@
+﻿@model VmComparison
+@{
+    ViewData["Title"] = "لیست مقایسه";
+    Layout = "/Areas/User/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model.Items.Count > 0)
+{
+    <partial name="_Comparison" model="Model" />
+}
+else
+{
+    <div class="mat-card details">
+        لیست مقایسه  شما خالیست
+    </div>
+}
+

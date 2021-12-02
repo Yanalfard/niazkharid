@@ -1,0 +1,328 @@
+﻿@model IEnumerable<TblProduct>
+@{
+    ViewData["Title"] = ViewData["Title"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<int> idsAdd = (List<int>)ViewData["ListIdAd"];
+    Random random = new Random();
+
+    int getNext()
+    {
+        if (idsAdd.Count > 0)
+        {
+            int randomIndex = random.Next(0, idsAdd.Count - 1);
+            int id = idsAdd[randomIndex];
+            idsAdd.Remove(id);
+            return id;
+        }
+        return -1;
+    }
+}
+
+@section Styles{
+
+    <link href="~/css/pages/search.min.css" rel="stylesheet" />
+    <link href="~/datePersion/persianDatepicker-default.css" rel="stylesheet" />
+}
+
+
+@section Aside{
+    @*@await Component.InvokeAsync("SearchView")*@
+
+    <form id="btnSearch" swap="filter" class="mat-card col">
+        <h4 class="uk-margin-bottom">
+            فیلتر ها
+        </h4>
+
+        <div class="fg-col">
+            <div class="fg-label">نام محصول</div>
+            <input type="text" class="entry" name="name" id="name" value="@ViewData["name"]" />
+            <div class="text-danger"></div>
+        </div>
+        <input type="hidden" class="entry" id="q" name="q" value="@ViewData["q"]" />
+        <input type="hidden" class="entry" id="catId" name="catId" value="@ViewData["catId"]" />
+        <input type="hidden" class="entry" id="cat" name="cat" value="@ViewData["cat"]" />
+        <input type="hidden" class="entry" id="brandsId" name="brandsId" value="@ViewData["brandId"]" />
+        <input type="hidden" class="entry" name="pageId" id="pageId" value="@ViewData["pageId"]" />
+        <div class="fg-col">
+            <div class="fg-label">برند محصول</div>
+            @{
+                List<TblBrand> listBrand = ViewData["brandList"] as List<TblBrand>;
+            }
+            <select class="entry brandList" name="brand" id="brand">
+                <option value=""></option>
+                @foreach (var item in listBrand)
+                {
+                    <option value="@item.BrandId">@item.Name</option>
+                }
+            </select>
+            <div class="text-danger"></div>
+        </div>
+
+        <div class="fg-col">
+            <label class="fg-label">قیمت</label>
+            <div class="rowr uk-child-width-1-2">
+                <div class="col">
+                    <label class="fg-label text-4">از قیمت</label>
+                    <input type="number" class="entry uk-margin-small-left" aria-label="priceFrom" placeholder="از" id="minPrice" name="minPrice" value="@ViewData["minPrice"]" min="0" />
+                    <div class="text-danger"></div>
+                </div>
+                <div class="col">
+                    <label class="fg-label text-4">تا قیمت </label>
+                    <input type="number" class="entry" aria-label="priceTo" placeholder="تا" name="maxPrice" id="maxPrice" value="@ViewData["maxPrice"]" min="0" />
+                    <div class="text-danger"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="fg-col">
+            <label class="fg-label">تاریخ ثبت</label>
+            <div class="rowr uk-child-width-1-2">
+                <div class="col">
+                    <label class="fg-label text-4">از تاریخ</label>
+                    <input type="text" readonly onfocusout="checkDate(this)" lang="fa" class="entry uk-margin-small-left" aria-label="priceFrom" placeholder="mm/dd/yyyy" id="minDate" name="minDate" value="@ViewData["minDate"]" autocomplete="off" />
+                    <div class="text-danger"></div>
+                </div>
+                <div class="col">
+                    <label class="fg-label text-4">تا تاریخ</label>
+                    <input type="text" readonly onfocusout="checkDate(this)" lang="fa" class="entry" aria-label="priceTo" placeholder="mm/dd/yyyy" id="maxDate" name="maxDate" value="@ViewData["maxDate"]" autocomplete="off" />
+                    <div class="text-danger"></div>
+                </div>
+            </div>
+        </div>
+
+        <label class="text-2 rowr uk-margin-small-bottom">
+            <input class="uk-checkbox" type="checkbox" @(((bool)ViewData["available"] == true) ? "checked" : "") id="available" name="available" />
+            فقط کالا های موجود
+        </label>
+
+        <label class="text-2 rowr uk-margin-small-bottom">
+            <input class="uk-checkbox" type="checkbox" id="isFractional" @(((bool)ViewData["IsFractional"] == true) ? "checked" : "") name="isFractional" />
+            فقط فروش های اقساطی
+        </label>
+
+        <label class="text-2 rowr uk-margin-small-bottom">
+            <input class="uk-checkbox" type="checkbox" id="discount" name="discount" @(((bool)ViewData["discount"] == true) ? "checked" : "") />
+            فقط کالا های تخفیف دار
+        </label>
+        <button class="btn btn-primary uk-margin-top">اعمال فیلتر ها</button>
+    </form>
+
+    <div swap="Ad"> @await Component.InvokeAsync("AdView", new { number = getNext() })</div>
+
+}
+
+<div role="none" id="filter"></div>
+
+<div class="search-grid form">
+    <div class="form-header">
+
+        <div class="rowr">
+
+            <nav class="breadcrumb uk-padding-remove">
+                <a href="#">جستجو</a>
+                <a href="#">@ViewData["Title"]</a>
+            </nav>
+
+        </div>
+
+    </div>
+    <div class="grid" id="grid">
+
+        @if (Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <partial name="_ProductBlock" model="item" />
+            }
+        }
+        else
+        {
+            <p>موردی یافت نشد</p>
+            <script>
+                document.querySelector('title').text = 'موردی یافت نشد';
+
+            </script>
+        }
+    </div>
+</div>
+
+<div role="none" id="Ad"></div>
+
+@if (Model.Any())
+{
+    <div class="loading">
+        <img src="~/st/v/loading.svg" />
+    </div>
+}
+
+@section Scripts{
+    <script src="~/datePersion/prism.js"></script>
+    <script src="~/datePersion/persianDatepicker.js"></script>
+    @if (Model.Any())
+    {
+        <script>
+            var isLoading = false;
+        </script>
+    }
+    else
+    {
+        <script>
+            var isLoading = true;
+        </script>
+    }
+<script>
+        $('#btnSearch').submit(function (e) {
+            e.preventDefault();
+            $("#overlay").fadeIn(300);
+            $(".loading").fadeIn();
+            //let data = $(this).serializeArray();
+            var name = $('#name').val();
+            var q = "";
+            var pageId = $('#pageId').val();
+            var brand = $('#brand option:selected').text();
+            var minPrice = $('#minPrice').val();
+            var maxPrice = $('#maxPrice').val();
+            var maxDate = $('#maxDate').val();
+            var minDate = $('#minDate').val();
+            var catId = "";
+            var cat = "";
+            var brandId = "";
+            $('#catId').val("");
+            $('#cat').val("");
+            $('#brandsId').val("");
+
+            let available = "";
+            if ($('#available').prop("checked") == true) {
+                available = "on";
+            }
+            let isFractional = "";
+            if ($('#isFractional').prop("checked") == true) {
+                isFractional = "on";
+            }
+            let discount = "";
+            if ($('#discount').prop("checked") == true) {
+                discount = "on";
+            }
+            $.get("/SearchProduct?pageId=" + 1 + "&name=" + name + "&q=" + "" + "&brand=" + brand + "&minPrice=" + minPrice + "&maxPrice=" + maxPrice + "&maxDate=" + maxDate + "&minDate=" + minDate + "&available=" + available + "&isFractional=" + isFractional + "&discount=" + discount + "&cat=" + "" + "&catId=" + "" + "&brandId=" + "", function (result) {
+                pageCount = 1;
+                $("#overlay").fadeOut(300);
+                if (result == false) {
+                    isLoading = true;
+                    $(".loading").fadeOut();
+                    document.getElementById('grid').innerHTML = "موردی یافت نشد";
+                    if (pageCount == 1) {
+                        document.querySelector('title').text = 'موردی یافت نشد';
+                    }
+                    return;
+                }
+                document.querySelector('title').text = 'جستوجوی پیشرفته';
+                document.getElementById('grid').innerHTML = result;
+                isLoading = false;
+                $(".loading").fadeOut();
+            });
+        });
+
+
+</script>
+    <script>
+        $('.brandList').val($('#brandsId').val());
+        $(function () {
+            //selectedBefor & selectedDate
+            $("#minDate").persianDatepicker();
+            $("#maxDate").persianDatepicker();
+        });
+    </script>
+
+    <script>
+        function checkDate(input) {
+            let val = input.value;
+            let lbl = input.parentElement.querySelector('.text-danger');
+
+            if (!val) {
+                lbl.innerText = '';
+                return true;
+            }
+
+            const a = Date.parse(val);
+
+            if (isNaN(a)) {
+                lbl.innerText = 'تاریخ درست وارد نشده است';
+                return false;
+            } else {
+                lbl.innerText = '';
+                return false;
+            }
+            return true;
+        }
+    </script>
+
+
+    <script>
+
+        let pageCount = 1;
+        const myDiv = document.querySelector('.loading');
+        window.addEventListener('DOMContentLoaded', () => {
+
+            $(".loading").fadeOut();
+
+            window.addEventListener('scroll', () => {
+                var limit = Math.max(document.body.scrollHeight, document.body.offsetHeight,
+                    document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);
+
+                limit = limit - 969;
+
+                if ((limit - window.scrollY) < 724) {
+                    nextPage();
+                }
+            });
+        })
+
+        function nextPage() {
+            if (isLoading) return;
+            isLoading = true;
+            pageCount++;
+            $(".loading").fadeIn();
+            var name = $('#name').val();
+            var q = $('#q').val();
+            var pageId = $('#pageId').val();
+            var brand = $('#brand option:selected').text();
+            var minPrice = $('#minPrice').val();
+            var maxPrice = $('#maxPrice').val();
+            var maxDate = $('#maxDate').val();
+            var minDate = $('#minDate').val();
+            let available = "";
+            var catId = $('#catId').val();
+            var cat = $('#cat').val();
+            var brandId = $('#brandsId').val();
+            if ($('#available').prop("checked") == true) {
+                available = "on";
+            }
+            let isFractional = "";
+            if ($('#isFractional').prop("checked") == true) {
+                isFractional = "on";
+            }
+            let discount = "";
+            if ($('#discount').prop("checked") == true) {
+                discount = "on";
+            }
+
+            $.get("/SearchProduct?pageId=" + pageCount + "&name=" + name + "&q=" + q + "&brand=" + brand + "&minPrice=" + minPrice + "&maxPrice=" + maxPrice + "&maxDate=" + maxDate + "&minDate=" + minDate + "&available=" + available + "&isFractional=" + isFractional + "&discount=" + discount + "&cat=" + cat + "&catId=" + catId + "&brandId=" + brandId, function (result) {
+                if (result == false) {
+                    isLoading = true;
+                    $(".loading").fadeOut();
+                    if (pageCount == 1) {
+                        document.querySelector('title').text = 'موردی یافت نشد';
+                    }
+                    return;
+                }
+                document.querySelector('title').text = 'جستوجوی پیشرفته';
+
+                document.getElementById('grid').innerHTML += result
+                isLoading = false;
+                $(".loading").fadeOut();
+            });
+
+        }
+
+    </script>
+}

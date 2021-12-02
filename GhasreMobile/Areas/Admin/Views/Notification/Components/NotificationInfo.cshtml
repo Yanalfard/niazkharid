@@ -1,0 +1,44 @@
+﻿@model DataLayer.Models.TblNotification
+<div class="modal-header">
+    <h6 class="modal-title" id="modalCenterTitle">
+        جزئیات اعلان
+    </h6>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="form-row ">
+        <div class="form-group col-md-3">
+            <label>کد اعلان:</label>
+            <span>@Model.NotificationId</span>
+        </div>
+        <div class="form-group col-md-3">
+            <label>نام کاربر:</label>
+            <span>@Model.Client.Name</span>
+        </div>
+        <div class="form-group col-md-3">
+            <label>نام فرستنده:</label>
+            <span>@Model.Sender.Name</span>
+        </div>
+        <div class="form-group col-md-3">
+            <label>وضعیت:</label>
+            @if (Model.IsSeen)
+            {
+                <span class="text-success">خوانده شده</span>
+            }
+            else
+            {
+                <span class="text-danger">خوانده نشده</span>
+            }
+        </div>
+        <hr />
+        <div class="form-group col-12">
+            <label>متن اعلان:</label>
+            <div class="bg-light p-3 uk-border-rounded">
+                @Model.Message
+            </div>
+        </div>
+    </div>
+</div>
+

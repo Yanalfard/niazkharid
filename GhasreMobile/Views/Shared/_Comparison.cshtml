@@ -1,0 +1,106 @@
+﻿@model VmComparison
+
+
+<div class="mat-card details">
+    <table dir="rtl">
+        <thead>
+            <tr>
+                <th></th>
+                @if (Model.Items.Any())
+                {
+                    @foreach (var item in Model.Items)
+                    {
+                        <td>
+                            <div class="comp-block">
+                                <img src="~/Images/ProductMain/thumb/@item.ImageName" alt="" />
+                                <a href="/Product/@item.ProductID/@item.Name.Replace("/", "").Replace(" ", "-")" target="_blank">@item.Name</a>
+                                @if (item.SumProduct > 0)
+                                {
+                                    @if (item.SpecialOffer)
+                                    {
+                                        if (item.PriceAfterDiscount == 0)
+                                        {
+                                            var BeforeSumWithDiscount = item.PriceBeforeDiscount - (long)(Math.Floor((double)(item.PriceBeforeDiscount * item.SpecialOfferDiscount / 100)));
+                                            <h4 class="discount">
+                                                @item.PriceBeforeDiscount.Value.ToString("#,0")
+                                            </h4>
+                                            <span class="price">
+                                                <span>@BeforeSumWithDiscount.Value.ToString("#,0")</span>
+                                                <span class="t">تومان</span>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            var AfterSumWithDiscount = item.PriceAfterDiscount - (long)(Math.Floor((double)(item.PriceAfterDiscount * item.SpecialOfferDiscount / 100)));
+                                            <span class="discount">
+                                                <span>@item.PriceBeforeDiscount.Value.ToString("#,0")</span>
+                                            </span>
+                                            <span class="price">
+                                                <span>@item.PriceAfterDiscount.Value.ToString("#,0")</span>
+                                                <span class="t">تومان</span>
+                                            </span>
+                                        }
+                                    }
+                                    else
+                                    {
+
+                                        @if (item.PriceAfterDiscount == 0)
+                                        {
+                                            <span class="price">
+                                                <span>@item.PriceBeforeDiscount.Value.ToString("#,0")</span>
+                                                <span class="t">تومان</span>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="discount">
+                                                <span>@item.PriceBeforeDiscount.Value.ToString("#,0")</span>
+                                            </span>
+                                            <span class="price">
+                                                <span>@item.PriceAfterDiscount.Value.ToString("#,0")</span>
+                                                <span class="t">تومان</span>
+                                            </span>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="unavailable">
+                                        <span class="text-4">
+                                            ناموجود
+                                        </span>
+                                    </div>
+                                }
+                                <button onclick="window.location.href = '/ShopCart/DeleteFromCompare/@item.ProductID?ReturnUrl=' + window.location.href"
+                                        class="remove btn-icon uk-border-rounded"
+                                        uk-icon="trash"
+                                        uk-tooltip="title:حذف از لیست مقایسه;pos:bottom-center"></button>
+                            </div>
+                        </td>
+                    }
+                }
+            </tr>
+        </thead>
+        @*@{
+
+                List<TblProperty> listFeatures = ViewBag.features as List<TblProperty>;
+                List<TblProductPropertyRel> productFeatures = ViewBag.productFeatures as List<TblProductPropertyRel>;
+            }*@
+        <tbody>
+            @foreach (var item in Model.Features)
+            {
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    @foreach (var feature in Model.Items)
+                    {
+                        <td>
+                            @string.Join(" - ", Model.ProductFeatures.Where(f => f.ProductId == feature.ProductID && f.PropertyId == item.PropertyId).Select(f => f.Value).ToList())
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

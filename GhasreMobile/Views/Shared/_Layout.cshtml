@@ -1,0 +1,493 @@
+﻿<!DOCTYPE html>
+<html lang="fa">
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="@(ViewData["Description"] ?? "سایت خرید و فروش آنلاین گوشی های موبایل به صورت اقساطی")">
+    <meta name="keywords" content="@(ViewData["Keywords"] ?? "قصر موبایل، گوشی، تلفن، خرید، آنلاین، اقساطی")">
+    <meta name="author" content="صدرا محمدی، ینال احمدزاده، مهدی سهندی">
+
+    <title>@(ViewData["Title"] ?? "قصر موبایل")</title>
+
+    <link href="~/css/uikit.min.css" rel="stylesheet" />
+    <link href="~/css/Controls.min.css" rel="stylesheet" />
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+    <link rel="manifest" type="application/json+oembed" href="~/manifest.json" />
+
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#810081">
+
+    @RenderSection("Styles", false)
+
+</head>
+<body>
+
+    <partial name="_OffCanvas" />
+
+    <div class="header">
+        <img class="biscuit unselectable" src="~/st/r/TopMemphis.png" width="1366" height="59" alt="عکس بالا صفحه" />
+        <div class="top">
+            <div class="uk-container rowr">
+                <a href="/" class="logo">
+                    <img src="~/st/r/logo.jpg" width="48" height="48" alt="لوگو فصر موبایل" />
+                </a>
+                <div class="search">
+                    <span id="myBtntxtSearchMain" class="link-text" uk-icon="search" dir="rtl" onclick="window.location = '/Search?q=' + (this.parentElement.querySelector('[name=q]').value)">
+                    </span>
+                    <input id="txtSearchMain" dir="rtl" class="entry-invis"
+                           type="text" placeholder="جستجو..." name="q"
+                           aria-label="جستجو"
+                           oninput="SearchInput(this)" />
+                </div>
+
+                <div uk-drop="boundary: .top; pos:bottom-justify; offset: 12; mode: none"
+                     id="dropSearch">
+                    <div class="drop-content mat-border mat col">
+                        @*<a href="">
+                                این یک <strong>گزینه</strong> می باشد
+                            </a>
+                            <a href="">
+                                این یک <strong>گزینه</strong> می باشد
+                            </a>
+                            <a href="">
+                                این یک <strong>گزینه</strong> می باشد
+                            </a>*@
+                    </div>
+                </div>
+                <button class="adv btn-primary" uk-tooltip="جستجوی پیشرفته" dir="rtl" onclick="window.location = '/Search?q=' + (this.parentElement.querySelector('[name=q]').value)">
+                    <span class="w">جستجوی پیشرفته</span>
+                    <span uk-icon="icon:filter-solid;ratio:.8"></span>
+                </button>
+
+                <a href="@(User.Identity.IsAuthenticated?"/User/Cart":"/ShopCart")" class="cart">
+                    <span class="label">سبد خرید</span>
+                    <div class="badge">
+                        <span id="countShopCart"></span>
+                    </div>
+                    <span class="icon">
+                        <span uk-icon="cart-outline"></span>
+                    </span>
+                </a>
+
+            </div>
+
+        </div>
+        <div class="bottom">
+            <div class="uk-container rowr">
+                <nav>
+                    <button uk-icon="grid-outline" onclick="CategoryClick()" id="btnCategory"></button>
+                    <button uk-icon="menu-outline" uk-toggle="target: #offCanvas" type="button" class="uk-margin-small-right show-on-threshold"></button>
+                    <a href="/">خانه</a>
+                    <a href="/Forum">تالار گفتگو</a>
+                    <a href="/Blog">اخبار</a>
+                    <a href="/Gallery">گالری</a>
+                    <a href="/Conditions">شرایط اقساطی</a>
+                    <a href="/Affiliate">شعب ما</a>
+                    <a href="/Contact">تماس با ما</a>
+                    <a href="/About">درباره ما</a>
+                </nav>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    @if (User.Claims.Last().Value == "user")
+                    {
+                        <a href="" class="profile">
+                            <span>پروفایل</span>
+                            <span uk-icon="person-circle-outline"></span>
+                        </a>
+
+                        <div uk-drop="boundary: .profile; pos:bottom-left; offset: 20; mode: hover,click">
+                            <div class="mat-card">
+                                <ul class="col g-2">
+                                    <li>
+                                        <a class="link-text" href="/User/Profile">پروفایل</a>
+                                    </li>
+                                    <li>
+                                        <a class="link-text" href="/User/Cart">سبد خرید</a>
+                                    </li>
+                                    <li>
+                                        <a class="link-text" href="/LogOut">خروج</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div> }
+                    else if (User.Claims.Last().Value == "employee" || User.Claims.Last().Value == "admin")
+                    {
+                        <a href="" class="profile">
+                            <span>پروفایل</span>
+                            <span uk-icon="person-circle-outline"></span>
+                        </a>
+
+                        <div uk-drop="boundary: .profile; pos:bottom-left; offset: 20; mode: hover,click">
+                            <div class="mat-card">
+                                <ul class="col g-2">
+                                    <li>
+                                        <a class="link-text" href="/Admin/">پنل مدیریت</a>
+                                    </li>
+                                    <li>
+                                        <a class="link-text" href="/User/Profile">پنل کاربری</a>
+                                    </li>
+                                    <li>
+                                        <a class="link-text" href="/LogOut">خروج</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>} }
+                else
+                {
+                    <a href="/Login" class="profile">
+                        <span>ورود</span>
+                        <span uk-icon="person-circle-outline"></span>
+                    </a>}
+
+
+                @*<a href="" class="enter">
+                                ورود / ثبت نام
+                    </a>*@
+
+            </div>
+        </div>
+        <div id="dropbar">
+            <div class="uk-container" onclick="CloseDropbar()" gemini="#btnCategory" clickedOutside="CloseDropbar()">
+                <div class="grid">
+                    @await Component.InvokeAsync("CategoryListView")
+                </div>
+            </div>
+        </div>
+    </div>
+    <div role="none" class="space-nav-header gap-b"></div>
+
+    <!-- Single means the layout has only one Column-->
+    @if (ViewData["Single"] == null)
+    {
+        <div class="m uk-container height">
+            <main class="m-content">
+                @RenderBody()
+            </main>
+            <aside class="m-aside">
+                @RenderSection("Aside", false)
+            </aside>
+        </div> }
+    else if (ViewData["Single"] != null)
+    {
+        <div class="uk-container height">
+            @RenderBody()
+        </div>}
+
+    <footer>
+        <div class="uk-container col uk-light">
+            <div class="grid">
+                <div class="certificates">
+                    <h4>مجوز ها</h4>
+                    <div class="slideshow mat-border" uk-slideshow="autoplay: true; autoplay-interval: 2500; ratio:1:1.12">
+                        <ul class="uk-slideshow-items mat-border">
+                            <li style="background-color:white;height:100%;border-radius:10px">
+                                <a referrerpolicy="origin" target="_blank" href="https://trustseal.enamad.ir/?id=209922&amp;Code=5WQXgHkeclrqQsWnl1Wj" style="background-color:white">
+                                    <img referrerpolicy="origin" src="https://Trustseal.eNamad.ir/logo.aspx?id=209922&amp;Code=5WQXgHkeclrqQsWnl1Wj" alt="" style="cursor:pointer" id="5WQXgHkeclrqQsWnl1Wj">
+                                    @*<img src="~/st/r/enamad.jpg" uk-tooltip="در دست اقدام" alt="" uk-cover>*@
+                                </a>
+                            </li>
+                            @*<li>
+                                    <img src="~/st/r/resane.jpg" uk-tooltip="در دست اقدام" alt="" uk-cover>
+                                </li>*@
+                        </ul>
+                        <ul class="uk-slideshow-nav uk-dotnav uk-flex-center uk-margin-bottom"></ul>
+                    </div>
+
+                </div>
+                <div class="links">
+                    <h4>لینک ها</h4>
+                    <ul>
+                        <li>
+                            <a href="/">خانه</a>
+                        </li>
+                        <li>
+                            <a href="/Questions">سوالات متداول</a>
+                        </li>
+                        <li>
+                            <a href="/Contact">تماس با ما</a>
+                        </li>
+                        <li>
+                            <a href="/Affiliate">مشاهده نمایندگی ها</a>
+                        </li>
+                        <li>
+                            <a href="@(User.Identity.IsAuthenticated ? "/User/Ticket" : "/Login")">پشتیبانی و تیکت</a>
+                        </li>
+                        <li>
+                            <a href="/Policies">قوانین سایت</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="intro">
+                    <h4>معرفی سایت</h4>
+                    @await Component.InvokeAsync("ShortDarbareyeMaView")
+                </div>
+                <div class="contact">
+                    <h4>تماس با ما</h4>
+                    <ul>
+                        <li>
+                            @await Component.InvokeAsync("ShortTamasBaMaView")
+                        </li>
+                        <li>
+                            <a href="/Contact">اطلاعات بیشتر</a>
+                        </li>
+                    </ul>
+                    <div class="media">
+                        @await Component.InvokeAsync("TelegramInstaView")
+                    </div>
+                </div>
+            </div>
+            <hr class="uk-margin-medium-top" />
+            <p class="uk-text-center text-4">
+                کلیه حقوق این سایت متعلق به قصر موبایل می باشد، طراحی و توسعه توسط
+                <strong><a href="https://arvintavco.com">ایده پرداز آروین تاو</a></strong>
+            </p>
+        </div>
+    </footer>
+    <link href="~/css/Load.css" rel="stylesheet" />
+    <!-- #Loadinh -->
+    <div id="overlay">
+        <div class="cv-spinner">
+            <span class="spinner"></span>
+        </div>
+    </div>
+    <!-- Modal Reply -->
+    <div id="ModalReply" uk-modal>
+        @await Component.InvokeAsync("CommentReplayView")
+    </div>
+
+    <!--Pwa-->
+    <script src="~/app.js"></script>
+
+    <script src="~/Jquery/jquery-3.4.1.min.js"></script>
+    <script src="~/js/uikit.min.js"></script>
+    <script src="~/js/uikit-icons.js"></script>
+    <script src="~/js/main.js"></script>
+
+    <script src="~/Validate/jquery.validate.min.js"></script>
+    <script src="~/Validate/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Validate/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Validate/jquery.unobtrusive-ajax.min.js"></script>
+    <script>
+        var input = document.getElementById("txtSearchMain");
+        input.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                document.getElementById("myBtntxtSearchMain").click();
+            }
+        });
+    </script>
+
+    <script>
+        var isUserLoggedIn = @(User.Identity.IsAuthenticated ? "true" : "false");
+    </script>
+
+    <script>
+        function reply(commentId) {
+            // آیدی کامنتی که بهش پاسخ داریم میدیم رو میزارم تو یه اینپوت
+            const input = document.getElementById('ParentId');
+            input.value = commentId;
+            UIkit.modal(document.getElementById('ModalReply')).show();
+        }
+    </script>
+
+    <script>
+        function LoadingRun(form) {
+            if (!$(form).valid()) return;
+            $("#overlay").fadeIn(300);
+        }
+        function LoadingEnd(form) {
+            $("#overlay").fadeOut(300);
+            $(form)[0].reset();
+        }
+        function SearchInput(input) {
+            let val = input.value.trim();
+            const drop = document.getElementById('dropSearch');
+            const list = document.querySelector('.drop-content');
+
+            if (val.length <= 2) {
+                UIkit.drop(drop).hide();
+                return
+            };
+
+            val = val.toLowerCase();
+
+            fetch('/q/' + val).then(j => {
+                j.json().then(i => {
+
+                    list.innerHTML = null;
+
+                    i.forEach(b => {
+                        list.innerHTML +=
+                            `<a href="/Search?q=${b}">${b.replace(val, `<strong>${val}</strong>`)}</a>`;
+                    })
+
+                    if (list.innerHTML !== "")
+                        UIkit.drop(drop).show();
+                    else {
+                        UIkit.drop(drop).hide();
+                    }
+                })
+            });
+
+        }
+
+        const dropbar = document.getElementById('dropbar');
+        let IsCategoryOpen = false;
+        function CategoryClick() {
+
+            if (IsCategoryOpen) {
+                // if open > close
+                dropbar.style.transition = 'all ease .3s';
+                dropbar.style.maxHeight = '0';
+                dropbar.querySelector('.grid').style.opacity = '0';
+            }
+            else {
+                // if closed > open
+                dropbar.style.transition = 'all ease .6s';
+                dropbar.style.maxHeight = 'calc(100vh - 100px)';
+                dropbar.querySelector('.grid').style.opacity = '1';
+            }
+            IsCategoryOpen = !IsCategoryOpen;
+
+        }
+
+        window.addEventListener('click', click);
+
+        const elementsWithClickedOutside = document.querySelectorAll('[clickedOutside]');
+
+        function click(e) {
+
+            for (let element of elementsWithClickedOutside) {
+                const codeString = element.getAttribute('clickedOutside');
+                const geminiQuery = element.getAttribute('gemini');
+                const gemini = document.querySelector(geminiQuery);
+
+                if (!e.path.includes(element) && !e.path.includes(gemini))
+                    eval(codeString);
+            }
+        }
+
+        function CloseDropbar() {
+            IsCategoryOpen = false;
+            const dropbar = document.getElementById('dropbar');
+            dropbar.style.transition = 'all ease .3s';
+            dropbar.style.maxHeight = '0';
+            dropbar.querySelector('.grid').style.opacity = '0';
+        }
+
+
+    </script>
+
+    <script>
+        //shop
+        $(function () {
+            countShopCart();
+            shopCountProduct();
+        });
+
+        function countShopCart() {
+            $.get("/api/Shop", function (res) {
+                $("#countShopCart").html(res);
+            });
+        }
+        function shopCountProduct() {
+            var id = $('#ProductColorId').val();
+            $.get("/api/ShopCountProduct/" + id, function (res) {
+                $("#shopCountProduct").html(res);
+            });
+        }
+
+        function AddToCart(id) {
+            var colorId = $('#ProductColorId').val();
+            $.get("/api/Shop/" + id + "/" + colorId, function (res) {
+                $("#countShopCart").html(res);
+                // updateShopCart();
+                animateCrt();
+                shopCountProduct();
+
+            });
+        }
+        function animateCrt() {
+            const element = document.querySelector('.cart');
+            element.classList.remove('anim-add-to-cart');
+            void element.offsetWidth;
+            element.classList.add('anim-add-to-cart');
+        }
+        function AddToCompare(id) {
+            $.get("/api/CompareApi/" + id, function (res) {
+                window.location = "/ShopCart/Comparison";
+            });
+        }
+        function updateShopCart() {
+            $("#showCart").load("/ShopCart/ShowCart").fadeOut(800).fadeIn(800);
+        }
+
+
+        function alertWhenReady(id) {
+            $.ajax({
+                url: '/Product/AlertWhenReady/',
+                data: { id: id },
+            }).done(function (result) {
+                if (result == "true") {
+                    UIkit.notification('بعد از موجود شدن محصول اطلاع رسانی خواهد شد');
+                }
+                else {
+                    UIkit.notification('شما در صف اطلاع رسانی قرار دارید');
+                }
+            })
+        }
+
+        function commandOrder(id, count) {
+            $.ajax({
+                url: "/ShopCart/CommandOrder/" + id,
+                type: "Get",
+                data: { count: count }
+            }).done(function (res) {
+                $("#showOrder").html(res);
+            });
+        }
+
+        function copy(text, message) {
+            var textArea = document.createElement("textarea");
+            textArea.value = text;
+
+            // Avoid scrolling to bottom
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                var successful = document.execCommand('copy');
+            } catch (err) {
+            }
+
+            document.body.removeChild(textArea);
+
+            if (message === undefined || message === null) return;
+
+            UIkit.notification(message);
+        }
+
+    </script>
+
+    <!--BEGIN RAYCHAT CODE-->
+    @*<script type="text/javascript">!function () { function t() { var t = document.createElement("script"); t.type = "text/javascript", t.async = !0, localStorage.getItem("rayToken") ? t.src = "https://app.raychat.io/scripts/js/" + o + "?rid=" + localStorage.getItem("rayToken") + "&href=" + window.location.href : t.src = "https://app.raychat.io/scripts/js/" + o + "?href=" + window.location.href; var e = document.getElementsByTagName("script")[0]; e.parentNode.insertBefore(t, e) } var e = document, a = window, o = "ed2cbd05-94f9-447e-8556-4bad0cf1ac1c"; "complete" == e.readyState ? t() : a.attachEvent ? a.attachEvent("onload", t) : a.addEventListener("load", t, !1) }();</script>*@ <!--END RAYCHAT CODE-->
+    <!--BEGIN crisp CODE-->
+    @*<script type="text/javascript">window.$crisp = []; window.CRISP_WEBSITE_ID = "e198dafe-71e1-41f4-ba5a-d6cc9fe32014"; (function () { d = document; s = d.createElement("script"); s.src = "https://client.crisp.chat/l.js"; s.async = 1; d.getElementsByTagName("head")[0].appendChild(s); })();</script>*@
+
+    <script type="text/javascript">window.$crisp = []; window.CRISP_WEBSITE_ID = "b0439a8b-4e2f-4046-8e9b-510661ff0dba"; (function () { d = document; s = d.createElement("script"); s.src = "https://client.crisp.chat/l.js"; s.async = 1; d.getElementsByTagName("head")[0].appendChild(s); })();</script>
+
+    @RenderSection("Scripts", false)
+
+</body>
+</html>

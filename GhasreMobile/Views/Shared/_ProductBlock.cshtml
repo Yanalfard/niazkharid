@@ -1,0 +1,103 @@
+﻿@model TblProduct
+@{
+    Random r = new Random();
+
+    var raiting = (Model.TblRate.Count > 0) ? (Model.TblRate.Sum(i => i.Rate) / Model.TblRate.Count) : 0;
+}
+
+<div class="product">
+    <div class="star-container" uk-tooltip="@raiting">
+        <div class="Stars" style="--rating:  @raiting"></div>
+    </div>
+
+    <span class="people">(@Model.TblRate.Count)</span>
+    <a href="/Product/@Model.ProductId/@Model.Name.Replace("/","").Replace(" ","-")" class="link-text" target="_blank">
+        <img src="~/Images/ProductMain/thumb/@Model.MainImage" alt="" width="200" height="200" />
+    </a>
+    <a href="/Product/@Model.ProductId/@Model.Name.Replace("/","").Replace(" ","-")" class="link-text" target="_blank">
+        <h3 class="name" dir="rtl">
+            @Model.Name
+        </h3>
+    </a>
+    <a href="/ShowCatagory/@Model.CatagoryId/@Model.Catagory.Name.Replace(" ","-")" class="category link-text">@Model.Catagory.Name </a>
+    @if (Model.TblColor.Sum(i => i.Count) > 0)
+    {
+        @if (Model.TblSpecialOffer.Count > 0 && Model.TblSpecialOffer.SingleOrDefault().ValidTill >= DateTime.Now)
+        {
+
+            if (Model.PriceAfterDiscount == 0)
+            {
+                var BeforeSumWithDiscount = Model.PriceBeforeDiscount - (long)(Math.Floor((double)(Model.PriceBeforeDiscount * Model.TblSpecialOffer.SingleOrDefault().Discount / 100)));
+                BeforeSumWithDiscount = (long)MainUtil.Round((double)BeforeSumWithDiscount, 3);
+                <h4 class="discount">
+                    @Model.PriceBeforeDiscount.Value.ToString("#,0")
+                </h4>
+                <span class="price">
+                    <span class="t">تومان</span>
+                    <span>@BeforeSumWithDiscount.Value.ToString("#,0")</span>
+                </span>
+            }
+            else
+            {
+                var AfterSumWithDiscount = Model.PriceAfterDiscount - (long)(Math.Floor((double)(Model.PriceAfterDiscount * Model.TblSpecialOffer.SingleOrDefault().Discount / 100)));
+                AfterSumWithDiscount = (long)MainUtil.Round((double)AfterSumWithDiscount, 3);
+                <span class="discount">
+                    <span>@Model.PriceAfterDiscount.Value.ToString("#,0")</span>
+                </span>
+                <span class="price">
+                    <span>@AfterSumWithDiscount.Value.ToString("#,0")</span>
+                    <span class="t">تومان</span>
+                </span>
+            }
+        }
+        else
+        {
+
+            @if (Model.PriceAfterDiscount == 0)
+            {
+                <span class="price">
+                    <span class="t">تومان</span>
+                    <span>@Model.PriceBeforeDiscount.Value.ToString("#,0")</span>
+                </span>
+            }
+            else
+            {
+                <span class="discount">
+                    <span>@Model.PriceBeforeDiscount.Value.ToString("#,0")</span>
+                </span>
+                <span class="price">
+                    <span class="t">تومان</span>
+                    <span>@Model.PriceAfterDiscount.Value.ToString("#,0")</span>
+                </span>
+            }
+        }
+
+    }
+    else
+    {
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="unavailable">
+                <span>
+                    <span></span>
+                    ناموجود
+                </span>
+                <button onclick="alertWhenReady(@Model.ProductId)" uk-tooltip="موجود شد خبر بده" class="link-text" uk-icon="notifications-outline"></button>
+            </div>
+        }
+        else
+        {
+            <div class="unavailable">
+                <span>
+                    <span></span>
+                    ناموجود
+                </span>
+                <button onclick="window.location='/Login'" uk-tooltip="موجود شد خبر بده" class="link-text" uk-icon="notifications-outline"></button>
+            </div>
+        }
+
+    }
+
+
+
+</div>

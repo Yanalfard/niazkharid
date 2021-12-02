@@ -1,0 +1,46 @@
+﻿[
+  {
+    "outputFile": "wwwroot/css/uikit.css",
+    "inputFile": "wwwroot/css/uikit.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/Controls.css",
+    "inputFile": "wwwroot/css/Controls.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/pages/index.css",
+    "inputFile": "wwwroot/css/pages/index.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/pages/product.css",
+    "inputFile": "wwwroot/css/pages/product.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/pages/search.css",
+    "inputFile": "wwwroot/css/pages/search.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/pages/forum.css",
+    "inputFile": "wwwroot/css/pages/forum.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/pages/blog.css",
+    "inputFile": "wwwroot/css/pages/blog.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/pages/account.css",
+    "inputFile": "wwwroot/css/pages/account.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/pages/user.css",
+    "inputFile": "wwwroot/css/pages/user.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/pages/affiliate.css",
+    "inputFile": "wwwroot/css/pages/affiliate.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/NewIndex.css",
+    "inputFile": "wwwroot/css/NewIndex.scss"
+  }
+]

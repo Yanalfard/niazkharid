@@ -1,0 +1,8 @@
+﻿@model TblAd
+
+@if (Model.Image != null)
+{
+    <div swap="@ViewData["Swap"]"><partial name="_Ad" model="Model" /></div>
+}
+
+

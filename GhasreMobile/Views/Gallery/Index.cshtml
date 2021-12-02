@@ -1,0 +1,18 @@
+﻿@model IEnumerable<TblAlbum>
+@{
+    ViewData["Title"] = "گالری";
+    ViewData["Single"] = true;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles{
+
+    <link href="~/css/pages/index.min.css" rel="stylesheet" />
+
+}
+
+<div class="gallery-main">
+    @foreach (var item in Model)
+    {
+        <partial name="_AlbumBlock" , model="item" />
+    }
+</div>
