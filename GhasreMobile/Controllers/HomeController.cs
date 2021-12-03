@@ -65,7 +65,7 @@ namespace GhasreMobile.Controllers
                 ViewData["ListIdSpecial"] = db.SpecialOffer.Get(i => i.ValidTill > DateTime.Now && i.Product.IsDeleted == false && i.Product.TblColor.Sum(i => i.Count) > 0).Select(i => i.SpecialOfferId).ToList();
                 return await Task.FromResult(View());
             }
-            catch
+            catch(Exception e)
             {
                 return await Task.FromResult(Redirect("404.html"));
             }
