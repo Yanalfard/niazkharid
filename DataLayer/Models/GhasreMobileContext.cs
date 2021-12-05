@@ -60,12 +60,12 @@ namespace DataLayer.Models
                 protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 => optionsBuilder
 .UseLazyLoadingProxies()
-.UseSqlServer("Data Source=185.55.224.183;Initial Catalog=asamedc1_gasremobile;User ID=asamedc1_Yanal3;Password=2fjS9CYVYkgS5V8");
+.UseSqlServer("Data Source=185.55.224.209;Initial Catalog=nkaalaco_Nkala;User ID=nkaalaco_Yanal;Password=wqI9#42a");
 //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //        {
 //            if (!optionsBuilder.IsConfigured)
 //            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+//#warning To protect potentially sensitive information in your connection string, y    ou should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
 //                optionsBuilder.UseSqlServer("Data Source=185.55.224.183;Initial Catalog=asamedc1_gasremobile;User ID=asamedc1_Yanal3;Password=2fjS9CYVYkgS5V8");
 //            }
 //        }

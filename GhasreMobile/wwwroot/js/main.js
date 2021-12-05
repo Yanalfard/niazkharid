@@ -45,7 +45,7 @@ window.addEventListener("load", () => {
     })
 })
 
-function share(url, title = "قصر موبایل", text = "فروشگاه موبایل قصر موبایل") {
+function share(url, title = "نیاز کالا", text = "فروشگاه موبایل نیاز کالا") {
 
     if (navigator.share) {
         navigator.share({

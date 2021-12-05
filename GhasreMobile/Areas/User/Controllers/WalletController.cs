@@ -19,7 +19,7 @@ namespace GhasreMobile.Areas.User.Controllers
     public class WalletController : Controller
     {
         // readonly string Domain = "https://localhost:44371";
-        readonly string Domain = "https://gasremobile2004.com";
+        readonly string Domain = "https://Nkaala.com";
 
 
         Core db = new Core();
@@ -76,7 +76,7 @@ namespace GhasreMobile.Areas.User.Controllers
                     db.Save();
 
                     //توضیحات مورد نیاز پرداخت
-                    var description = "قصر موبایل";
+                    var description = "نیاز کالا";
                     //آدرس برگشت از بانک به سایت
                     var returnurl = Domain + "/ShopCart/OnlinePayment/";
                     //مبلغ پرداخت
@@ -163,7 +163,7 @@ namespace GhasreMobile.Areas.User.Controllers
                 db.Save();
 
                 //توضیحات مورد نیاز پرداخت
-                var description = "قصر موبایل";
+                var description = "نیاز کالا";
                 //آدرس برگشت از بانک به سایت
                 var returnurl = Domain + "/ShopCart/OnlinePayment/";
                 //مبلغ پرداخت
