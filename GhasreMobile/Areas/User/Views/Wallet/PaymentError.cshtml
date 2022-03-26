@@ -6,13 +6,14 @@
 
 <div class="container uk-margin-auto-bottom mat-pad" style="height:50vh">
     <div class="">
+        @if (ViewBag.IsSuccess == true)
+        {
+            <div class="uk-alert uk-alert-success">
+                <p>@Model.ResCode - @Model.Description</p>
+            </div>
+        }
 
-        <div class="uk-alert uk-alert-danger">
-            <h2>پرداخت با موفقیت انجام نشد</h2>
 
-            <p>@Model.ResCode - @Model.Description</p>
-
-        </div>
 
     </div>
 </div>
