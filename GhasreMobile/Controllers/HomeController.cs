@@ -40,7 +40,8 @@ namespace GhasreMobile.Controllers
                 if (!visits.Any(i => i.Date.ToShortDateString() == dt))
                 {
                     ViewBag.showModelMessage = "true";
-                    ViewBag.TextModelMessage = db.Config.Get(i => i.Key == "TextModelMessage").SingleOrDefault().Value;
+                    ViewBag.TextModelMessage = db.Config.Get(i => i.Key == "TextModelMessage")
+                        .SingleOrDefault().Value;
                     TblVisit addVisit = new TblVisit();
                     addVisit.Ip = ipUser.ToString();
                     addVisit.Date = DateTime.Now;
@@ -60,6 +61,12 @@ namespace GhasreMobile.Controllers
                         db.Save();
                     }
                 }
+                if (visits.Any(i => i.Date < DateTime.Now.AddDays(-7)))
+                {
+                    db.Visit.Get(i => i.Date < DateTime.Now.AddDays(-7)).ToList().ForEach(p => db.Visit.Delete(p));
+                    db.Save();
+                }
+
 
                 ViewData["ListIdAd"] = db.Ad.Get().Select(i => i.AdId).ToList();
                 ViewData["ListIdSpecial"] = db.SpecialOffer.Get(i => i.ValidTill > DateTime.Now && i.Product.IsDeleted == false && i.Product.TblColor.Sum(i => i.Count) > 0).Select(i => i.SpecialOfferId).ToList();
